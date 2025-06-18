@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { listings, bookings } from '../services/api';
 import { Listing, Booking } from '../types';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../contexts/AuthContext';
 
 export const HostDashboard = () => {
   const { user } = useAuth();

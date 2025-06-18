@@ -4,10 +4,10 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { listings, bookings } from '../services/api';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../contexts/AuthContext';
 import { MapComponent } from '../components/Map';
 import { PaymentModal } from '../components/PaymentModal';
-import { Listing } from '../types';
+import { Listing, Booking } from '../types';
 
 const bookingSchema = z.object({
   checkIn: z.string().min(1, 'Check-in date is required'),

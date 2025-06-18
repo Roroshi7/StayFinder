@@ -1,9 +1,9 @@
-import { useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, API_URL } from '../services/api';
 import { User } from '../types';
 
-interface UseAuthReturn {
+interface AuthContextType {
   user: User | null;
   loading: boolean;
   error: string | null;
@@ -13,7 +13,21 @@ interface UseAuthReturn {
   becomeHost: () => Promise<void>;
 }
 
-export const useAuth = (): UseAuthReturn => {
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};
+
+interface AuthProviderProps {
+  children: React.ReactNode;
+}
+
+export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -22,22 +36,22 @@ export const useAuth = (): UseAuthReturn => {
   const loadUser = useCallback(async () => {
     try {
       const token = localStorage.getItem('token');
-      console.log('Token found:', !!token); // Debug log
+      console.log('Token found:', !!token);
       
       if (!token) {
         setLoading(false);
         return;
       }
 
-      console.log('Calling auth.getMe()...'); // Debug log
+      console.log('Calling auth.getMe()...');
       const response = await auth.getMe();
-      console.log('getMe response:', response); // Debug log
+      console.log('getMe response:', response);
       
       if (response.success) {
         setUser(response.data);
-        console.log('User set:', response.data); // Debug log
+        console.log('User set:', response.data);
       } else {
-        console.log('getMe failed:', response.error); // Debug log
+        console.log('getMe failed:', response.error);
         localStorage.removeItem('token');
         setUser(null);
       }
@@ -66,8 +80,7 @@ export const useAuth = (): UseAuthReturn => {
         const userResponse = await auth.getMe();
         if (userResponse.success) {
           setUser(userResponse.data);
-          // Don't navigate here - let the component handle navigation
-          return userResponse.data; // Return user data for the component to use
+          console.log('User logged in successfully:', userResponse.data);
         } else {
           throw new Error('Failed to get user data');
         }
@@ -127,7 +140,7 @@ export const useAuth = (): UseAuthReturn => {
     }
   };
 
-  return {
+  const value = {
     user,
     loading,
     error,
@@ -136,4 +149,10 @@ export const useAuth = (): UseAuthReturn => {
     logout,
     becomeHost,
   };
+
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
 }; 

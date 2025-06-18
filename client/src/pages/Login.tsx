@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../contexts/AuthContext';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -31,6 +31,7 @@ export default function Login() {
       setError(null);
       console.log('Attempting login with:', { email: data.email, password: '***' });
       await login(data.email, data.password);
+      // Navigate immediately after successful login
       const from = location.state?.from?.pathname || '/';
       navigate(from);
     } catch (err: any) {
