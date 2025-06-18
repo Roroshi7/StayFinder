@@ -70,8 +70,8 @@ export const login = async (
   try {
     const { email, password } = req.body;
 
-    // Check if user exists
-    const user = await User.findOne({ email });
+    // Check if user exists and explicitly select password field
+    const user = await User.findOne({ email }).select('+password');
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -80,7 +80,7 @@ export const login = async (
     }
 
     // Check password
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await user.matchPassword(password);
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
@@ -108,6 +108,7 @@ export const login = async (
       },
     });
   } catch (error) {
+    console.error('Login error:', error);
     next(error);
   }
 };
