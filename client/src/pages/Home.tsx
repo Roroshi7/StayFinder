@@ -11,13 +11,16 @@ export const Home = () => {
   useEffect(() => {
     const fetchFeaturedListings = async () => {
       try {
+        console.log('Fetching featured listings...'); // Debug log
         const response = await listings.getAll();
+        console.log('Listings response:', response); // Debug log
         if (response.success) {
           // For now, we'll just take the first 6 listings as featured
           setFeaturedListings(response.data.slice(0, 6));
         }
       } catch (err: any) {
-        setError(err.response?.data?.error || 'Failed to load featured listings');
+        console.error('Error fetching listings:', err); // Debug log
+        setError(err.response?.data?.error || 'Failed to load featured listings. Please check your connection.');
       } finally {
         setLoading(false);
       }

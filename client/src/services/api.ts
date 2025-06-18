@@ -3,11 +3,14 @@ import { ApiResponse, AuthResponse, Booking, Listing, User } from '../types';
 
 export const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
 
+console.log('API URL:', API_URL); // Debug log
+
 const api = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  timeout: 10000, // 10 second timeout
 });
 
 // Add token to requests if it exists
@@ -16,8 +19,26 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  console.log('Making request to:', config.url); // Debug log
   return config;
 });
+
+// Add response interceptor for better error handling
+api.interceptors.response.use(
+  (response) => {
+    console.log('Response received:', response.status, response.config.url);
+    return response;
+  },
+  (error) => {
+    console.error('API Error:', {
+      url: error.config?.url,
+      status: error.response?.status,
+      message: error.message,
+      data: error.response?.data
+    });
+    return Promise.reject(error);
+  }
+);
 
 // Auth API
 export const auth = {
