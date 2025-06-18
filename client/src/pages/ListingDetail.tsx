@@ -7,7 +7,7 @@ import { listings, bookings } from '../services/api';
 import { useAuth } from '../contexts/AuthContext';
 import { MapComponent } from '../components/Map';
 import { PaymentModal } from '../components/PaymentModal';
-import { Listing, Booking } from '../types';
+import { Listing } from '../types';
 
 const bookingSchema = z.object({
   checkIn: z.string().min(1, 'Check-in date is required'),

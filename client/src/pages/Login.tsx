@@ -6,8 +6,16 @@ import { z } from 'zod';
 import { useAuth } from '../contexts/AuthContext';
 
 const loginSchema = z.object({
-  email: z.string().email('Invalid email address'),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  email: z
+    .string()
+    .min(1, 'Email is required')
+    .email('Please enter a valid email address')
+    .trim()
+    .toLowerCase(),
+  password: z
+    .string()
+    .min(1, 'Password is required')
+    .min(6, 'Password must be at least 6 characters long'),
 });
 
 type LoginFormData = z.infer<typeof loginSchema>;
@@ -78,6 +86,7 @@ export default function Login() {
                 id="email"
                 {...register('email')}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                placeholder="Enter your email address"
               />
               {errors.email && (
                 <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
@@ -96,6 +105,7 @@ export default function Login() {
                 id="password"
                 {...register('password')}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                placeholder="Enter your password"
               />
               {errors.password && (
                 <p className="mt-1 text-sm text-red-600">
