@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { auth } from '../services/api';
 
@@ -29,19 +29,7 @@ export const Profile = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState('');
 
-  useEffect(() => {
-    // Initialize with current user data
-    if (authUser) {
-      setProfile(prev => ({
-        ...prev,
-        name: authUser.name || '',
-        email: authUser.email || ''
-      }));
-    }
-    fetchProfile();
-  }, [authUser]);
-
-  const fetchProfile = async () => {
+  const fetchProfile = useCallback(async () => {
     try {
       const response = await auth.getProfile();
       console.log('Profile API response:', response);
@@ -73,7 +61,19 @@ export const Profile = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [authUser]);
+
+  useEffect(() => {
+    // Initialize with current user data
+    if (authUser) {
+      setProfile(prev => ({
+        ...prev,
+        name: authUser.name || '',
+        email: authUser.email || ''
+      }));
+    }
+    fetchProfile();
+  }, [authUser, fetchProfile]);
 
   const handleSave = async () => {
     setIsSaving(true);

@@ -68,7 +68,7 @@ export const PaymentModal: React.FC<PaymentModalProps> = ({ open, onClose, onSuc
                 type="text"
                 maxLength={5}
                 value={expiry}
-                onChange={e => setExpiry(e.target.value.replace(/[^0-9\/]/g, ''))}
+                onChange={e => setExpiry(e.target.value.replace(/[^0-9/]/g, ''))}
                 className="mt-1 block w-full border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:ring-primary-500 focus:border-primary-500"
                 placeholder="MM/YY"
                 disabled={loading || success}
