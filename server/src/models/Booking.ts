@@ -6,7 +6,7 @@ export interface IBooking extends mongoose.Document {
   checkIn: Date;
   checkOut: Date;
   totalPrice: number;
-  status: 'pending' | 'confirmed' | 'cancelled';
+  status: 'pending' | 'confirmed' | 'cancelled' | 'rejected';
   guests: number;
   createdAt: Date;
 }
@@ -38,7 +38,7 @@ const bookingSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['pending', 'confirmed', 'cancelled'],
+      enum: ['pending', 'confirmed', 'cancelled', 'rejected'],
       default: 'pending',
     },
     guests: {
